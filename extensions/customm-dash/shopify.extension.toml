@@ -1,0 +1,31 @@
+
+api_version = "2026-01"
+
+[[extensions]]
+name = "customm-dash"
+handle = "customm-dash"
+uid = "feb1a835-7d2e-2344-8ec1-c7d1b76fcc347cef14cd"
+type = "ui_extension"
+
+[[extensions.targeting]]
+module = "./src/OrderStatusBlock.jsx"
+target = "customer-account.order-status.block.render"
+
+[[extensions.targeting]]
+module = "./src/UserPoints.jsx"
+target = "customer-account.profile.block.render"
+
+[extensions.capabilities]
+api_access = true
+network_access = true
+
+
+
+[app_proxy]
+prefix = "apps"
+subpath = "return-order"
+url = "https://example.com" # The CLI will update this to your Cloudflare URL
+
+
+# THIS SECTION MUST BE INSIDE THE [[extensions]] BLOCK
+

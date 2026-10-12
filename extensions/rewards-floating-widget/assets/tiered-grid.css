@@ -1,0 +1,270 @@
+/* ==========================================
+   LUXURY SHOWROOM & TWO POPUPS
+========================================== */
+
+.luxury-showroom-wrapper {
+  background: #ffffff;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.luxury-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 40px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.luxury-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  position: relative;
+}
+
+.luxury-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 135%;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+.luxury-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.luxury-card:not(.is-locked):hover .luxury-image {
+  transform: scale(1.03);
+}
+
+/* Grayscale and Blur lock treatment */
+.luxury-card.is-locked .luxury-image {
+  filter: blur(12px) grayscale(70%);
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.luxury-lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.luxury-lock-icon {
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  color: #111;
+  margin-bottom: 12px;
+}
+
+.luxury-lock-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.luxury-tier-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: #111;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.luxury-meta {
+  padding-top: 14px;
+}
+
+.luxury-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: #111;
+}
+
+.luxury-vendor {
+  margin: 0 0 14px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #777;
+}
+
+/* Multi-Button Layout setup */
+.luxury-action-row {
+  display: flex;
+  gap: 8px;
+}
+
+.luxury-enquiry-btn {
+  flex: 1;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  padding: 12px 6px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .25s ease;
+  white-space: nowrap;
+}
+
+.luxury-enquiry-btn:hover {
+  background: #fff;
+  color: #111;
+}
+
+.luxury-enquiry-btn.secondary-btn {
+  background: #fff;
+  color: #111;
+}
+
+.luxury-enquiry-btn.secondary-btn:hover {
+  background: #111;
+  color: #fff;
+}
+
+.luxury-enquiry-btn.locked-btn {
+  width: 100%;
+  background: transparent;
+  color: #777;
+  border-color: #ddd;
+}
+
+.luxury-enquiry-btn.locked-btn:hover {
+  background: #f5f5f5;
+  color: #111;
+  border-color: #111;
+}
+
+/* ==========================================
+   BODY LOCK & MODAL WINDOW SYSTEMS
+========================================== */
+body.luxury-modal-open {
+  overflow: hidden !important;
+}
+
+.luxury-modal {
+  position: fixed !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+  width: 100vw !important; height: 100vh !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  padding: 30px;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .3s ease;
+  z-index: 2147483647 !important;
+}
+
+.luxury-modal.is-active {
+  opacity: 1; visibility: visible; pointer-events: auto;
+}
+
+.luxury-modal-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+}
+
+.luxury-modal-content {
+  position: relative;
+  width: min(1280px, 92vw) !important;
+  height: min(850px, 90vh) !important;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 2;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+  transform: translateY(20px);
+  transition: transform .35s ease;
+}
+
+.luxury-modal.is-active .luxury-modal-content {
+  transform: translateY(0);
+}
+
+.luxury-modal-close {
+  position: absolute; top: 18px; right: 18px;
+  width: 42px; height: 42px;
+  border: none; border-radius: 50%;
+  background: rgba(255,255,255,.95);
+  color: #111; font-size: 24px;
+  cursor: pointer; z-index: 10;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.luxury-modal-body-layout {
+  display: grid;
+  grid-template-columns: 58% 42%;
+  width: 100%; height: 100%;
+}
+
+.luxury-modal-visual { background: #f5f5f5; overflow: hidden; }
+.luxury-modal-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.luxury-modal-form-side {
+  padding: 60px;
+  display: flex; flex-direction: column; justify-content: center;
+  overflow-y: auto;
+}
+
+.luxury-product-description {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #444;
+}
+
+.luxury-modal-header { margin-bottom: 35px; }
+.luxury-modal-header h2 {
+  margin: 0 0 8px; font-size: 22px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 2px; color: #111;
+}
+.luxury-modal-subtitle { margin: 0; font-size: 14px; color: #666; }
+
+.luxury-form-group { margin-bottom: 24px; }
+.luxury-form-group label {
+  display: block; margin-bottom: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #111;
+}
+.luxury-form-group textarea {
+  width: 100%; min-height: 180px; padding: 16px;
+  border: 1px solid #ddd; border-radius: 8px; background: #fafafa;
+  font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;
+}
+
+.luxury-submit-btn {
+  width: 100%; border: 1px solid #111; background: #111; color: #fff; padding: 16px;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 2px; font-size: 11px;
+}
+.luxury-submit-btn:hover { background: #fff; color: #111; }
+
+.luxury-success-message { font-size: 15px; line-height: 1.6; color: #111; }
+.luxury-empty-state { text-align: center; padding: 60px 20px; color: #777; }
+
+@media (max-width: 1024px) {
+  .luxury-modal-form-side { padding: 40px; }
+}
+
+@media (max-width: 768px) {
+  .luxury-modal-body-layout { grid-template-columns: 1fr; }
+  .luxury-modal-visual { height: 45%; }
+  .luxury-modal-form-side { height: 55%; padding: 24px; }
+  .luxury-action-row { flex-direction: column; gap: 6px; }
+}
