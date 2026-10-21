@@ -1,157 +1,256 @@
+
+{% comment %}
+  Automatically use the collection belonging to the current collection page URL.
+  Example: /collections/bridal-wear -> uses the bridal-wear collection.
+{% endcomment %}
+
+{% assign showroom_collection = collection %}
+
 {{ 'tiered-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'tiered-grid.js' | asset_url }}" defer></script>
 
-{%- comment -%} Define the Hierarchy and determine user's tier {%- endcomment -%}
-{%- assign customer_tier = 'bronze' -%}
-{%- for tag in customer.tags -%}
-  {%- if tag contains 'tier:' -%}
-    {%- assign customer_tier = tag | remove: 'tier:' | downcase -%}
-  {%- endif -%}
-{%- endfor -%}
+<div
+  id="luxuryShowroomWrapper"
+  class="luxury-showroom-wrapper"
+  data-shop-domain="{{ shop.permanent_domain }}"
+  data-customer-logged-in="{% if customer %}true{% else %}false{% endif %}"
+  data-customer-email="{{ customer.email | escape }}"
+  data-customer-id="{{ customer.id }}"
+  data-membership-url="https://regina-cycadlike-senatorially.ngrok-free.dev/api/tiered-grid"
+  data-membership-loaded="false"
+>
+  {% if showroom_collection != blank %}
 
-{%- comment -%} Map string tiers to numeric values for comparison {%- endcomment -%}
-{%- case customer_tier -%}
-  {%- when 'bronze' -%}{%- assign customer_rank = 1 -%}
-  {%- when 'silver' -%}{%- assign customer_rank = 2 -%}
-  {%- when 'gold' -%}{%- assign customer_rank = 3 -%}
-  {%- when 'platinum' -%}{%- assign customer_rank = 4 -%}
-  {%- when 'diamond' -%}{%- assign customer_rank = 5 -%}
-  {%- else -%}{%- assign customer_rank = 1 -%}
-{%- endcase -%}
+    {% assign collection_required_tier = showroom_collection.metafields.custom.minimum_membership_tier.value | default: '' | downcase | strip %}
 
-<div class="luxury-showroom-wrapper" 
-     id="luxuryShowroomWrapper" 
-     data-shop-domain="{{ shop.permanent_domain }}" 
-     data-customer-tier="{{ customer_tier }}"
-     data-customer-rank="{{ customer_rank }}">
-  
-  <div class="luxury-grid">
-    {%- assign showroom_collection = block.settings.showroom_collection -%}
-    
-    {% if showroom_collection != blank %}
+    <div class="luxury-grid">
       {% for product in showroom_collection.products %}
-        
-        {%- assign product_required_tier = 'bronze' -%}
-        {%- for tag in product.tags -%}
-          {%- if tag contains 'tier:' -%}
-            {%- assign product_required_tier = tag | remove: 'tier:' | downcase -%}
-          {%- endif -%}
-        {%- endfor -%}
 
-        {%- case product_required_tier -%}
-          {%- when 'bronze' -%}{%- assign product_rank = 1 -%}
-          {%- when 'silver' -%}{%- assign product_rank = 2 -%}
-          {%- when 'gold' -%}{%- assign product_rank = 3 -%}
-          {%- when 'platinum' -%}{%- assign product_rank = 4 -%}
-          {%- when 'diamond' -%}{%- assign product_rank = 5 -%}
-          {%- else -%}{%- assign product_rank = 1 -%}
-        {%- endcase -%}
+        {% assign required_tier = collection_required_tier %}
 
-        {%- assign is_locked = false -%}
-        {%- if customer == blank or customer_rank < product_rank -%}
-          {%- assign is_locked = true -%}
-        {%- endif -%}
-        
-        <div class="luxury-card {% if is_locked %}is-locked{% endif %}" data-required-tier="{{ product_required_tier }}" data-required-rank="{{ product_rank }}">
-          <div class="luxury-image-wrapper">
-            {% if product.featured_image %}
-              <img class="luxury-image" src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title | escape }}" loading="lazy">
-            {% else %}
-              {{ 'product-1' | placeholder_svg_tag: 'luxury-image placeholder' }}
+        {% if required_tier == blank %}
+          {% for tag in product.tags %}
+            {% assign tag_parts = tag | split: ':' %}
+            {% if tag_parts.size == 2 and tag_parts[0] == 'tier' %}
+              {% assign required_tier = tag_parts[1] | downcase | strip %}
+              {% break %}
             {% endif %}
+          {% endfor %}
+        {% endif %}
 
-            {% if is_locked %}
-              <div class="luxury-lock-overlay">
-                <div class="luxury-lock-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
-                </div>
-                <span class="luxury-tier-badge">{{ product_required_tier | upcase }} EXCLUSIVE</span>
-              </div>
-            {% endif %}
-          </div>
-          
-          <div class="luxury-meta">
-            <h3 class="luxury-title">{{ product.title }}</h3>
-            <p class="luxury-vendor">{{ product.vendor | uppercase }}</p>
-            
-            {% if is_locked %}
-              <button type="button" class="luxury-enquiry-btn locked-btn" onclick="handleLockedItemClick('{{ product_required_tier }}')">
-                Unlock with {{ product_required_tier | capitalize }} Tier
-              </button>
-            {% else %}
-              <div class="luxury-action-row">
-                <button type="button" class="luxury-enquiry-btn secondary-btn" onclick="openQuickViewModal('{{ product.title | escape }}', '{{ product.featured_image | img_url: '800x' }}', '{{ product.description | escape }}')">
-                  Quick View
-                </button>
-                <button type="button" class="luxury-enquiry-btn" onclick="openEnquiryModal('{{ product.id }}', '{{ product.title | escape }}', '{{ product.featured_image | img_url: '600x' }}', '{{ customer.id }}', '{{ customer.email }}')">
-                  Request Consultation
-                </button>
-              </div>
-            {% endif %}
-          </div>
-        </div>
+        {% if required_tier == blank %}
+          {% assign required_tier = 'silver' %}
+        {% endif %}
+
+        {% assign required_rank = 1 %}
+        {% case required_tier %}
+          {% when 'silver' %}
+            {% assign required_rank = 1 %}
+          {% when 'gold' %}
+            {% assign required_rank = 2 %}
+          {% when 'platinum' %}
+            {% assign required_rank = 3 %}
+          {% when 'diamond' %}
+            {% assign required_rank = 4 %}
+          {% when 'emerald' %}
+            {% assign required_rank = 5 %}
+          {% when 'ruby' %}
+            {% assign required_rank = 6 %}
+          {% when 'infinite' %}
+            {% assign required_rank = 7 %}
+        {% endcase %}
+
+
+
+
+
+
+<article
+  class="luxury-card is-locked"
+  data-product-id="{{ product.id }}"
+  data-required-tier="{{ required_tier | escape }}"
+  data-required-rank="{{ required_rank }}"
+  data-product-url="{{ product.url }}"
+>
+  <a
+    class="luxury-image-wrapper"
+    href="{{ product.url }}"
+    aria-label="{{ product.title | escape }}"
+  >
+    {% if product.featured_image %}
+      <img
+        class="luxury-image"
+        src="{{ product.featured_image | image_url: width: 900 }}"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        width="900"
+        height="1200"
+        loading="lazy"
+      >
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'luxury-image' }}
+    {% endif %}
+
+    <div class="luxury-lock-overlay">
+      <span class="luxury-lock-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.7" width="20" height="20">
+          <rect x="5" y="10" width="14" height="11" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+      </span>
+      <span class="luxury-tier-badge">
+        {{ required_tier | upcase }} EXCLUSIVE
+      </span>
+    </div>
+  </a>
+
+  <div class="luxury-meta">
+    <h3 class="luxury-title">
+      <a href="{{ product.url }}">{{ product.title | escape }}</a>
+    </h3>
+
+    {% if product.vendor != blank %}
+      <p class="luxury-vendor">{{ product.vendor | escape }}</p>
+    {% endif %}
+
+    <p class="luxury-price">
+      {{ product.price | money }}
+    </p>
+
+    <button
+      type="button"
+      class="luxury-enquiry-btn locked-btn"
+      data-action="locked"
+      data-required-tier="{{ required_tier | escape }}"
+    >
+      Unlock with {{ required_tier | capitalize }} tier
+    </button>
+
+    <div class="luxury-action-row" hidden>
+      <a
+        class="luxury-enquiry-btn"
+        href="{{ product.url }}"
+      >
+        View Product
+      </a>
+
+      <button
+        type="button"
+        class="luxury-enquiry-btn secondary-btn"
+        data-action="enquiry"
+        data-product-id="{{ product.id }}"
+        data-title="{{ product.title | escape }}"
+        data-image="{% if product.featured_image %}{{ product.featured_image | image_url: width: 900 }}{% endif %}"
+        data-customer-id="{{ customer.id }}"
+        data-customer-email="{{ customer.email | escape }}"
+      >
+        Enquire
+      </button>
+    </div>
+  </div>
+</article>
+
+
+
 
       {% endfor %}
-    {% else %}
-      <div class="luxury-empty-state">
-        <p>Please configure a collection source within your Shopify Theme customizer layout settings.</p>
-      </div>
-    {% endif %}
+    </div>
+
+  {% else %}
+
+    <p class="luxury-collection-empty">
+      This grid displays products when opened on a Shopify collection page.
+    </p>
+
+  {% endif %}
+</div>
+
+<div id="luxuryQuickViewModal" class="luxury-modal" hidden>
+  <div
+    class="luxury-modal-backdrop"
+    data-close-modal="luxuryQuickViewModal"
+  ></div>
+
+  <div
+    class="luxury-modal-content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="luxuryQuickViewTitle"
+  >
+    <button
+      type="button"
+      class="luxury-modal-close"
+      data-close-modal="luxuryQuickViewModal"
+      aria-label="Close"
+    >×</button>
+
+    <img
+      id="luxuryQuickViewImage"
+      src=""
+      alt=""
+      width="600"
+      height="600"
+    >
+
+    <h2 id="luxuryQuickViewTitle"></h2>
+    <p id="luxuryQuickViewDescription"></p>
   </div>
 </div>
 
-{%- comment -%} POPUP 1: QUICK VIEW MODAL {%- endcomment -%}
-<div id="luxuryQuickViewModal" class="luxury-modal" aria-hidden="true">
-  <div class="luxury-modal-overlay" onclick="closeModal('luxuryQuickViewModal')"></div>
-  <div class="luxury-modal-content quickview-layout">
-    <button type="button" class="luxury-modal-close" onclick="closeModal('luxuryQuickViewModal')">&times;</button>
-    <div class="luxury-modal-body-layout single-view">
-      <div class="luxury-modal-visual">
-        <img id="qvProductImage" src="" alt="Product Showcase View">
-      </div>
-      <div class="luxury-modal-form-side">
-        <div class="luxury-modal-header">
-          <h2 id="qvProductTitle">Product Title</h2>
-          <p class="luxury-modal-subtitle">Bespoke Collection Gallery</p>
-        </div>
-        <div class="luxury-product-description" id="qvProductDesc"></div>
-      </div>
-    </div>
-  </div>
-</div>
+<div id="luxuryEnquiryModal" class="luxury-modal" hidden>
+  <div
+    class="luxury-modal-backdrop"
+    data-close-modal="luxuryEnquiryModal"
+  ></div>
 
-{%- comment -%} POPUP 2: BESPOKE REQUEST FORM MODAL {%- endcomment -%}
-<div id="luxuryEnquiryModal" class="luxury-modal" aria-hidden="true">
-  <div class="luxury-modal-overlay" onclick="closeModal('luxuryEnquiryModal')"></div>
-  <div class="luxury-modal-content">
-    <button type="button" class="luxury-modal-close" onclick="closeModal('luxuryEnquiryModal')">&times;</button>
-    <div class="luxury-modal-body-layout">
-      <div class="luxury-modal-visual">
-        <img id="modalProductImage" src="" alt="Selected Product Layout View">
-      </div>
-      <div class="luxury-modal-form-side">
-        <div class="luxury-modal-header">
-          <h2>Bespoke Enquiry</h2>
-          <p id="modalProductTitle" class="luxury-modal-subtitle">Designer Selection</p>
-        </div>
-        <form id="luxuryEnquiryForm" onsubmit="handleEnquirySubmit(event)">
-          <input type="hidden" id="formProductId" name="productId">
-          <input type="hidden" id="formCustomerId" name="customerId">
-          <input type="hidden" id="formCustomerEmail" name="customerEmail">
-          <div class="luxury-form-group">
-            <label for="clientMessage">Special Requirements / Sizing Notes</label>
-            <textarea id="clientMessage" name="message" rows="5" placeholder="Enter your tailoring or measurements preferences..." required></textarea>
-          </div>
-          <button type="submit" class="luxury-submit-btn">Submit Formal Request</button>
-        </form>
-        <div id="formSuccessMessage" class="luxury-success-message" style="display: none;">
-          <p>Your tracking entry has been updated. Our concierge team will connect shortly.</p>
-        </div>
-      </div>
-    </div>
+  <div
+    class="luxury-modal-content"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="luxuryEnquiryTitle"
+  >
+    <button
+      type="button"
+      class="luxury-modal-close"
+      data-close-modal="luxuryEnquiryModal"
+      aria-label="Close"
+    >×</button>
+
+    <h2 id="luxuryEnquiryTitle">Product Enquiry</h2>
+
+    <form
+      id="luxuryEnquiryForm"
+      onsubmit="handleEnquirySubmit(event)"
+    >
+      <input
+        type="hidden"
+        id="luxuryEnquiryProductId"
+        name="productId"
+      >
+
+      <input
+        type="hidden"
+        id="luxuryEnquiryCustomerId"
+        name="customerId"
+      >
+
+      <input
+        type="email"
+        id="luxuryEnquiryEmail"
+        name="email"
+        placeholder="Your email"
+        required
+      >
+
+      <textarea
+        id="luxuryEnquiryMessage"
+        name="message"
+        placeholder="Your message"
+        required
+      ></textarea>
+
+      <button type="submit">Send Enquiry</button>
+    </form>
   </div>
 </div>
 
@@ -159,12 +258,6 @@
 {
   "name": "Luxury Showroom Grid",
   "target": "section",
-  "settings": [
-    {
-      "type": "collection",
-      "id": "showroom_collection",
-      "label": "Showroom Collection Source"
-    }
-  ]
+  "settings": []
 }
 {% endschema %}

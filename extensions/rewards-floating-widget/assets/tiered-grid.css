@@ -1,131 +1,139 @@
-/* ==========================================
-   LUXURY SHOWROOM & TWO POPUPS
-========================================== */
+
+/* Luxury collection grid */
 
 .luxury-showroom-wrapper {
-  background: #ffffff;
-  padding: 40px 20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #fff;
+  padding: 24px 16px 48px;
+  color: #111;
+  font-family: Inter, Arial, sans-serif;
 }
 
 .luxury-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 40px 24px;
-  max-width: 1400px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 26px 8px;
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
 .luxury-card {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   background: #fff;
-  position: relative;
 }
 
 .luxury-image-wrapper {
   position: relative;
-  width: 100%;
-  padding-bottom: 135%;
+  display: block;
   overflow: hidden;
-  background: #f7f7f7;
+  aspect-ratio: 3 / 4.2;
+  background: #e8e7e5;
+  color: inherit;
+  text-decoration: none;
 }
 
 .luxury-image {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .5s ease;
+  transition: transform .4s ease, filter .3s ease;
 }
 
 .luxury-card:not(.is-locked):hover .luxury-image {
-  transform: scale(1.03);
+  transform: scale(1.035);
 }
 
-/* Grayscale and Blur lock treatment */
+/* Lock treatment */
+
 .luxury-card.is-locked .luxury-image {
-  filter: blur(12px) grayscale(70%);
-  transform: scale(1.02);
-  pointer-events: none;
+  filter: blur(8px) grayscale(65%);
+  transform: scale(1.035);
 }
 
 .luxury-lock-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.4);
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 3;
+  gap: 12px;
+  background: rgb(255 255 255 / 28%);
+  transition: opacity .25s ease;
 }
 
 .luxury-lock-icon {
+  display: flex;
   width: 44px;
   height: 44px;
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 50%;
+  background: #fff;
   color: #111;
-  margin-bottom: 12px;
-}
-
-.luxury-lock-icon svg {
-  width: 20px;
-  height: 20px;
+  box-shadow: 0 3px 15px rgb(0 0 0 / 10%);
 }
 
 .luxury-tier-badge {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  padding: 9px 14px;
+  border-radius: 24px;
   background: #111;
   color: #fff;
-  padding: 6px 12px;
-  border-radius: 20px;
-  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-align: center;
 }
 
 .luxury-meta {
-  padding-top: 14px;
+  padding: 10px 2px 0;
 }
 
 .luxury-title {
-  margin: 0 0 4px;
-  font-size: 14px;
+  margin: 0 0 5px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.luxury-title a {
   color: #111;
+  text-decoration: none;
 }
 
 .luxury-vendor {
-  margin: 0 0 14px;
-  font-size: 11px;
-  letter-spacing: 1.5px;
+  margin: 0 0 5px;
   color: #777;
+  font-size: 10px;
+  letter-spacing: 1px;
 }
 
-/* Multi-Button Layout setup */
-.luxury-action-row {
-  display: flex;
-  gap: 8px;
+.luxury-price {
+  margin: 0 0 10px;
+  color: #222;
+  font-size: 11px;
 }
 
 .luxury-enquiry-btn {
-  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 9px 10px;
   border: 1px solid #111;
   background: #111;
   color: #fff;
-  padding: 12px 6px;
+  font: inherit;
   font-size: 10px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: .5px;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
-  transition: all .25s ease;
-  white-space: nowrap;
+  transition: background .2s ease, color .2s ease;
 }
 
 .luxury-enquiry-btn:hover {
@@ -143,128 +151,124 @@
   color: #fff;
 }
 
-.luxury-enquiry-btn.locked-btn {
-  width: 100%;
-  background: transparent;
+.luxury-action-row {
+  display: flex;
+  gap: 8px;
+}
+
+.luxury-action-row > * {
+  flex: 1;
+}
+
+.luxury-action-row[hidden],
+.locked-btn[hidden],
+.luxury-lock-overlay[hidden] {
+  display: none !important;
+}
+
+.luxury-collection-empty {
+  padding: 50px 16px;
   color: #777;
-  border-color: #ddd;
+  text-align: center;
 }
 
-.luxury-enquiry-btn.locked-btn:hover {
-  background: #f5f5f5;
-  color: #111;
-  border-color: #111;
-}
+/* Modals */
 
-/* ==========================================
-   BODY LOCK & MODAL WINDOW SYSTEMS
-========================================== */
 body.luxury-modal-open {
   overflow: hidden !important;
 }
 
+.luxury-modal[hidden] {
+  display: none !important;
+}
+
 .luxury-modal {
-  position: fixed !important;
-  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-  width: 100vw !important; height: 100vh !important;
-  display: flex !important; align-items: center !important; justify-content: center !important;
-  padding: 30px;
-  opacity: 0; visibility: hidden; pointer-events: none;
-  transition: opacity .3s ease;
-  z-index: 2147483647 !important;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 55%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .25s ease, visibility .25s ease;
 }
 
 .luxury-modal.is-active {
-  opacity: 1; visibility: visible; pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
-.luxury-modal-overlay {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(6px);
+.luxury-modal-backdrop {
+  position: absolute;
+  inset: 0;
 }
 
 .luxury-modal-content {
   position: relative;
-  width: min(1280px, 92vw) !important;
-  height: min(850px, 90vh) !important;
+  z-index: 1;
+  width: min(100%, 900px);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 28px;
+  border-radius: 8px;
   background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  z-index: 2;
-  box-shadow: 0 20px 60px rgba(0,0,0,.15);
-  transform: translateY(20px);
-  transition: transform .35s ease;
-}
-
-.luxury-modal.is-active .luxury-modal-content {
-  transform: translateY(0);
 }
 
 .luxury-modal-close {
-  position: absolute; top: 18px; right: 18px;
-  width: 42px; height: 42px;
-  border: none; border-radius: 50%;
-  background: rgba(255,255,255,.95);
-  color: #111; font-size: 24px;
-  cursor: pointer; z-index: 10;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #111;
+  font-size: 24px;
+  cursor: pointer;
 }
 
-.luxury-modal-body-layout {
-  display: grid;
-  grid-template-columns: 58% 42%;
-  width: 100%; height: 100%;
+@media (min-width: 1500px) {
+  .luxury-showroom-wrapper {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
 }
 
-.luxury-modal-visual { background: #f5f5f5; overflow: hidden; }
-.luxury-modal-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.luxury-modal-form-side {
-  padding: 60px;
-  display: flex; flex-direction: column; justify-content: center;
-  overflow-y: auto;
+@media (max-width: 900px) {
+  .luxury-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 8px;
+  }
 }
 
-.luxury-product-description {
-  font-size: 14px;
-  line-height: 1.7;
-  color: #444;
-}
+@media (max-width: 600px) {
+  .luxury-showroom-wrapper {
+    padding: 16px 10px 32px;
+  }
 
-.luxury-modal-header { margin-bottom: 35px; }
-.luxury-modal-header h2 {
-  margin: 0 0 8px; font-size: 22px; font-weight: 500;
-  text-transform: uppercase; letter-spacing: 2px; color: #111;
-}
-.luxury-modal-subtitle { margin: 0; font-size: 14px; color: #666; }
+  .luxury-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 8px;
+  }
 
-.luxury-form-group { margin-bottom: 24px; }
-.luxury-form-group label {
-  display: block; margin-bottom: 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #111;
-}
-.luxury-form-group textarea {
-  width: 100%; min-height: 180px; padding: 16px;
-  border: 1px solid #ddd; border-radius: 8px; background: #fafafa;
-  font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;
-}
+  .luxury-title {
+    font-size: 11px;
+  }
 
-.luxury-submit-btn {
-  width: 100%; border: 1px solid #111; background: #111; color: #fff; padding: 16px;
-  cursor: pointer; text-transform: uppercase; letter-spacing: 2px; font-size: 11px;
-}
-.luxury-submit-btn:hover { background: #fff; color: #111; }
+  .luxury-tier-badge {
+    padding: 7px 9px;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
 
-.luxury-success-message { font-size: 15px; line-height: 1.6; color: #111; }
-.luxury-empty-state { text-align: center; padding: 60px 20px; color: #777; }
-
-@media (max-width: 1024px) {
-  .luxury-modal-form-side { padding: 40px; }
-}
-
-@media (max-width: 768px) {
-  .luxury-modal-body-layout { grid-template-columns: 1fr; }
-  .luxury-modal-visual { height: 45%; }
-  .luxury-modal-form-side { height: 55%; padding: 24px; }
-  .luxury-action-row { flex-direction: column; gap: 6px; }
+  .luxury-modal-content {
+    padding: 22px 16px;
+  }
 }
