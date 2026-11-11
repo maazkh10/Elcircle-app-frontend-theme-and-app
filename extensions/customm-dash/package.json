@@ -1,11 +1,11 @@
 {
-  "name": "customm-dash",
-  "private": true,
-  "version": "1.0.0",
-  "license": "UNLICENSED",
   "dependencies": {
-    "preact": "^10.10.x",
-    "@preact/signals": "^2.3.x",
-    "@shopify/ui-extensions": "2026.1.x"
-  }
+    "@shopify/ui-extensions": "2026.10.x",
+    "@preact/signals": "^2.3.0",
+    "preact": "^10.10.0"
+  },
+  "private": true,
+  "type": "module",
+  "name": "customm-dash",
+  "version": "1.0.0"
 }

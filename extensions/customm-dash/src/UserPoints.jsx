@@ -1,3 +1,4 @@
+import { accountRequest } from "./customer-api";
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import "@shopify/ui-extensions/preact";
@@ -9,6 +10,7 @@ export default async () => {
 function Extension() {
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchPoints();
@@ -17,25 +19,14 @@ function Extension() {
   const fetchPoints = async () => {
     try {
       setLoading(true);
+      setErrorMessage("");
 
-      const email = "itaphrodit@gmail.com";
-
-      const res = await fetch(
-        `https://regina-cycadlike-senatorially.ngrok-free.dev/api/loyalty/points?email=${encodeURIComponent(email)}`,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true",
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      setPoints(data.totalpoints || 0);
+      const data = await accountRequest("/api/customer-account/points");
+      setPoints(data.points || 0);
 
     } catch (error) {
       console.log(error);
-      shopify.toast.show("Failed to load points");
+      setErrorMessage(error.message || "Unable to load your rewards. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -46,6 +37,7 @@ function Extension() {
 
   return (
     <s-box padding="base">
+      {errorMessage && <s-banner tone="critical">{errorMessage}</s-banner>}
       {/* MAIN CARD */}
       <s-box
         border="base"
@@ -157,7 +149,7 @@ function Extension() {
               </s-text>
 
               <s-text emphasis="bold">
-                {loading ? "Loading..." : `${points} Points`}
+                {loading ? "Loading..." : errorMessage ? "Unavailable" : `${points} Points`}
               </s-text>
 
               <s-button onClick={fetchPoints}>

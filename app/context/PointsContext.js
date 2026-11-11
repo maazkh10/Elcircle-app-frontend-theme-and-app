@@ -11,7 +11,7 @@ export function PointsProvider({
 }) {
 
     const pointsData = useCustomerPoints({
-        email, 
+        email,
         customerId
     });
 

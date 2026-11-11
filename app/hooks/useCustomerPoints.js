@@ -14,7 +14,7 @@ export function useCustomerPoints({
         async function loadPoints() {
             setLoading(true)
             const totalPoints = await getCustomerPoints({
-        email , 
+        email ,
         customerId
     })
 
@@ -29,5 +29,5 @@ export function useCustomerPoints({
     },[email , customerId])
 
     return {points , loading}
-    
+
 }

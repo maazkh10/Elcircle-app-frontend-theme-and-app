@@ -1,4 +1,4 @@
-api_version = "2026-04"
+api_version = "2026-10"
 
 [[extensions]]
 uid = "22d03945-8da0-d324-0b76-e176009f2c102db93966"
@@ -9,3 +9,6 @@ handle = "rewards-page"
 [[extensions.targeting]]
 target = "customer-account.page.render"
 module = "./src/RewardsPage.jsx"
+[extensions.capabilities]
+api_access = true
+network_access = true

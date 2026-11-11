@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const url = new URL(membershipUrl);
+      const url = new URL(membershipUrl, window.location.origin);
       url.searchParams.set("email", customerEmail);
 
       const response = await fetch(url.toString(), {

@@ -1,10 +1,9 @@
-import {extension, Text} from '@shopify/ui-extensions/admin';
+import "@shopify/ui-extensions/preact";
+import { render } from "preact";
 
-export default extension(
-  'admin.product-details.block.render',
-  (root) => {
-    root.appendChild(
-      root.createComponent(Text, {}, 'HELLO WORLD')
-    );
-  },
+export default () => render(
+  <s-admin-block heading="Elcircle product analysis">
+    <s-text>HELLO WORLD</s-text>
+  </s-admin-block>,
+  document.body,
 );

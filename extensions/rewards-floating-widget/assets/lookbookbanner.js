@@ -15,7 +15,7 @@
    */
 
   var API_URL =
-    "https://regina-cycadlike-senatorially.ngrok-free.dev/api/loyalty/points";
+    "/apps/elcircle-membership/loyalty/points";
 
   var pointsCache = {};
 

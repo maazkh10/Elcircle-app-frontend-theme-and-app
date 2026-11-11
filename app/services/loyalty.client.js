@@ -1,10 +1,10 @@
-// this is for fetching one 
-const API_URL = 
+// this is for fetching one
+const API_URL =
   "https://regina-cycadlike-senatorially.ngrok-free.dev/api/loyalty/points";
 
 
   export async function getCustomerPoints({email , customerId}) {
-    
+
     try {
         const params = new URLSearchParams()
         if (email) params.append("email" , email)

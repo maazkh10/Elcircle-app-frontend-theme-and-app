@@ -1,0 +1,259 @@
+<div class="maison-loyalty-wrapper">
+
+  <button type="button" class="maison-trigger-btn" id="open-loyalty-modal">
+    <span>Earn 20 AED ($5.50) in Points on this piece.</span>
+    <span class="maison-link-accent">Redeem Rewards</span>
+  </button>
+
+
+  <div class="maison-modal-overlay" id="loyalty-modal">
+    <div class="maison-modal-window">
+      <button type="button" class="maison-modal-close" id="close-loyalty-modal" aria-label="Close Summary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+
+      {% if customer %}
+
+        <div class="maison-loyalty-content">
+          <header class="el-header">
+            <span class="el-eyebrow">THE SOVEREIGN ARCHIVE</span>
+            <h4 class="el-balance-label">Your Balance</h4>
+            <div id="points-text" class="el-points-display">
+              <span id="points-number">120</span>
+            </div>
+            <p class="el-unit-label">AVAILABLE ERCIRCLE POINTS</p>
+
+
+
+<div class="el-action-wrapper" style="margin-top: 20px;">
+  <button type="button" class="maison-btn maison-btn-primary" id="el-redeem-btn">
+    Apply Coupon to Cart
+  </button>
+  <div id="el-status-message" class="el-text" style="text-align: center; margin-top: 8px; font-size: 11px; display: none;"></div>
+</div>
+
+          </header>
+
+          <div class="el-selection">
+            <label class="el-radio-item">
+              <input type="radio" name="use_points" value="no" id="use-points-no" checked>
+              <div class="el-radio-custom"></div>
+              <span class="el-text">Retain balance for later</span>
+            </label>
+
+            <label class="el-radio-item">
+              <input type="radio" name="use_points" value="yes" id="use-points-yes">
+              <div class="el-radio-custom"></div>
+              <span class="el-text">Apply rewards to acquisition</span>
+            </label>
+          </div>
+
+          <div id="el-slider-panel" class="el-slider-drawer">
+            <div class="el-slider-readout">
+              <span class="el-text el-slider-points-label">Points to redeem: <strong id="el-slider-points-val">20</strong></span>
+              <span class="el-text el-slider-saving-label">Saving: <strong id="el-slider-monetary-val">20.00</strong> AED</span>
+            </div>
+            <div class="el-range-wrapper">
+              <input type="range" id="el-points-slider" min="20" max="120" step="20" value="20">
+            </div>
+            <p class="el-unit-label el-slider-hint">Minimum redemption: 20 points</p>
+          </div>
+
+          <footer class="el-footer">
+            <a href="/pages/reward-page" target="_blank" class="el-discovery">
+              DISCOVER THE ECOSYSTEM
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="el-icon">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </a>
+          </footer>
+        </div>
+
+      {% else %}
+
+        <div class="maison-guest-content">
+          <span class="el-eyebrow">THE SOVEREIGN ARCHIVE</span>
+          <h3 class="maison-guest-title">Unlock Member Rewards</h3>
+          <p class="maison-guest-desc">Create an account or authenticate your status to claim your complementary points balance towards this acquisition.</p>
+
+          <div class="maison-auth-actions">
+            <a href="{{ routes.account_login_url }}" class="maison-btn maison-btn-primary">Sign In</a>
+            <a href="{{ routes.account_register_url }}" class="maison-btn maison-btn-secondary">Create Account</a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{{ 'loyalty-points-migrated-0.css' | asset_url | stylesheet_tag }}
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('loyalty-modal');
+    const openBtn = document.getElementById('open-loyalty-modal');
+    const closeBtn = document.getElementById('close-loyalty-modal');
+
+    // UI Toggle events
+    if (openBtn && modal) {
+      openBtn.addEventListener('click', () => modal.classList.add('is-open'));
+    }
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => modal.classList.remove('is-open'));
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('is-open');
+      });
+    }
+
+    // Logic for Points Panel if customer session exists
+    const radioYes = document.getElementById('use-points-yes');
+    const radioNo = document.getElementById('use-points-no');
+    const sliderPanel = document.getElementById('el-slider-panel');
+    const slider = document.getElementById('el-points-slider');
+    const pointsValText = document.getElementById('el-slider-points-val');
+    const monetaryValText = document.getElementById('el-slider-monetary-val');
+    const pointsNumber = document.getElementById('points-number');
+
+    const redeemBtn = document.getElementById("el-redeem-btn");
+    const statusMsg = document.getElementById("el-status-message");
+
+    const customerEmail = {{ customer.email | json }};
+    const shopDomain = {{ shop.permanent_domain | json }};
+    const BASE_API = "/apps/elcircle-membership";
+
+    if (customerEmail) {
+      fetch(`${BASE_API}/loyalty/get-points`, {
+        method: "GET",
+        headers: {
+
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error status ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        const livePoints = data.points || 0;
+        console.log(`[ODOO FETCH SUCCESS] Live balance: ${livePoints}`);
+        if (pointsNumber) pointsNumber.textContent = livePoints;
+
+        if (slider) {
+          // ⭐ FIXED: Removed the stray "i" text variable token causing the crash
+          slider.max = livePoints;
+
+          if (Number(livePoints) < 20) {
+            slider.min = "0";
+            slider.value = String(livePoints);
+            if (pointsValText) pointsValText.textContent = livePoints;
+            if (monetaryValText) monetaryValText.textContent = (livePoints / 20).toFixed(2);
+          } else {
+            slider.min = "20";
+            slider.value = "20"; // Defaults slider position to baseline redemption unit
+            if (pointsValText) pointsValText.textContent = "20";
+            if (monetaryValText) monetaryValText.textContent = "1.00";
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching live Odoo points:", err));
+    }
+
+    if (radioYes && radioNo && sliderPanel) {
+      const toggleSliderView = () => {
+        sliderPanel.style.display = radioYes.checked ? 'block' : 'none';
+      };
+
+      radioYes.addEventListener('change', toggleSliderView);
+      radioNo.addEventListener('change', toggleSliderView);
+
+      if (slider) {
+        slider.addEventListener('input', function() {
+          const currentPoints = this.value;
+          const dynamicCashback = (parseFloat(currentPoints) / 20).toFixed(2);
+
+          if (pointsValText) pointsValText.textContent = currentPoints;
+          if (monetaryValText) monetaryValText.textContent = dynamicCashback;
+        });
+      }
+    }
+
+    if (redeemBtn) {
+      redeemBtn.addEventListener("click" , async () => {
+        if (!radioYes.checked) {
+          alert("Please apply rewards to acquisition first.");
+          return;
+        }
+
+        const selectedPoints = Number(slider.value);
+        if (!selectedPoints || selectedPoints < 20) {
+          alert("Minimum target should be 20 points.");
+          return;
+        }
+
+        redeemBtn.disabled = true;
+        redeemBtn.textContent = "Generating reward...";
+
+        if (statusMsg) {
+          statusMsg.style.display = "block";
+          statusMsg.style.color = "gray";
+          statusMsg.textContent = "Processing points validation..."; // FIXED: Cleaned up placeholder typo string
+        }
+
+        try {
+          const response = await fetch(`${BASE_API}/loyalty/redeem` , {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({
+              email: customerEmail,
+              shop: shopDomain,
+              points: selectedPoints
+            })
+          });
+
+          const result = await response.json();
+
+          // ⭐ FIXED: Swapped result.sucess to result.success to accurately catch backend response mapping
+          if (result.success && result.discountCode) {
+            statusMsg.style.color = "var(--el-gold)";
+            statusMsg.textContent = `Success! Code ${result.discountCode} created.`;
+
+            // ⭐ FIXED: Prefixed absolute path forward slash to load the URL properly
+            fetch(`/discount/${result.discountCode}`)
+              .then(() => {
+                statusMsg.textContent = "Discount Applied! Reloading page context...";
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
+              });
+          } else {
+            throw new Error(result.error || "Failed to issue coupon code instance.");
+          }
+        } catch (err) {
+          console.error("❌ Redemption Pipeline crashed:", err);
+          statusMsg.style.color = "red";
+          statusMsg.textContent = err.message || "Error setting calculation values.";
+          redeemBtn.disabled = false;
+          redeemBtn.textContent = "Apply Coupon to Cart";
+        }
+      });
+    }
+  });
+</script>
+
+
+{% schema %}
+{
+  "name": "Maison Rewards",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}

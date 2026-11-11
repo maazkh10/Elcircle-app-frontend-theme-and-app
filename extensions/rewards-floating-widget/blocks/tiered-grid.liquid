@@ -1,8 +1,5 @@
 
-{% comment %}
-  Automatically use the collection belonging to the current collection page URL.
-  Example: /collections/bridal-wear -> uses the bridal-wear collection.
-{% endcomment %}
+
 
 {% assign showroom_collection = collection %}
 
@@ -16,7 +13,7 @@
   data-customer-logged-in="{% if customer %}true{% else %}false{% endif %}"
   data-customer-email="{{ customer.email | escape }}"
   data-customer-id="{{ customer.id }}"
-  data-membership-url="https://regina-cycadlike-senatorially.ngrok-free.dev/api/tiered-grid"
+  data-membership-url="/apps/elcircle-membership/tiered-grid"
   data-membership-loaded="false"
 >
   {% if showroom_collection != blank %}

@@ -1,5 +1,5 @@
 
-api_version = "2026-01"
+api_version = "2026-10"
 
 [[extensions]]
 name = "customm-dash"
@@ -18,14 +18,3 @@ target = "customer-account.profile.block.render"
 [extensions.capabilities]
 api_access = true
 network_access = true
-
-
-
-[app_proxy]
-prefix = "apps"
-subpath = "return-order"
-url = "https://example.com" # The CLI will update this to your Cloudflare URL
-
-
-# THIS SECTION MUST BE INSIDE THE [[extensions]] BLOCK
-

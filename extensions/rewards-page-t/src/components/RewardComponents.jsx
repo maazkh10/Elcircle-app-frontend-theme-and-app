@@ -13,7 +13,7 @@ export function StatCard({ title, value, subtext, icon, progress, progressLabel 
           <Text size="small" emphasis="bold">{title}</Text>
           <Text size="small" appearance="subdued" decoration="underline">View activity</Text>
         </InlineStack>
-        
+
         <InlineStack gap="base" blockAlignment="center">
             <Text size="extraLarge">{icon}</Text>
             <BlockStack gap="none">
@@ -55,7 +55,7 @@ export function OwnedRewardCard({ title, code, icon }) {
           </InlineStack>
           <Text size="small" decoration="underline">Terms</Text>
         </InlineStack>
-        
+
         <Box border="base" padding="small" cornerRadius="base" background="surfaceSecondary">
            <BlockStack gap="none">
              <Text size="extraSmall" appearance="subdued">Discount code</Text>
@@ -114,7 +114,7 @@ export function VipTierCard({ title, status, validUntil, rewards, perks, icon })
             <Text size="large">{icon}</Text>
             {status && <Badge tone="success">{status}</Badge>}
         </InlineStack>
-        
+
         <BlockStack gap="none">
             <Text emphasis="bold" size="large">{title}</Text>
             {validUntil && <Text size="small" appearance="subdued">Member until {validUntil}</Text>}

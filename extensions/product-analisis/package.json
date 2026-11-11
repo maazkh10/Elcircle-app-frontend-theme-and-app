@@ -1,10 +1,11 @@
 {
-  "name": "product-analisis",
-  "private": true,
-  "version": "1.0.0",
-  "license": "UNLICENSED",
-  "type": "module",
   "dependencies": {
-    "@shopify/ui-extensions": "2025.10.0"
-  }
+    "@shopify/ui-extensions": "2026.10.x",
+    "@preact/signals": "^2.3.0",
+    "preact": "^10.10.0"
+  },
+  "private": true,
+  "type": "module",
+  "name": "product-analisis",
+  "version": "1.0.0"
 }

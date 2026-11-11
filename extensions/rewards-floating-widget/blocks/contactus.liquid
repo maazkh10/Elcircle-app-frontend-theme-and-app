@@ -1,11 +1,11 @@
 <div class="atelier-asymmetric-hub" id="AtelierBooking-{{ section.id }}">
-  
+
   <div class="canvas-visual-pane">
     <div class="canvas-hairline-accent"></div>
     <div class="canvas-image-frame">
       {%- if section.settings.hero_image != blank -%}
-        <img 
-          src="{{ section.settings.hero_image | image_url: width: 1000 }}" 
+        <img
+          src="{{ section.settings.hero_image | image_url: width: 1000 }}"
           loading="lazy"
           alt="Boutique Lookbook Exhibition" />
       {%- else -%}
@@ -35,18 +35,18 @@
           {{ form.errors | default_errors }}
         </div>
       {%- endif -%}
-      
+
       <div class="ledger-input-wrapper">
         <label class="ledger-label-ui" for="ContactForm-name-{{ section.id }}">
           {{ section.settings.name_label | default: "Identity" }}
         </label>
-        <input 
-          type="text" 
-          name="contact[name]" 
-          id="ContactForm-name-{{ section.id }}" 
-          class="ledger-input-ui" 
+        <input
+          type="text"
+          name="contact[name]"
+          id="ContactForm-name-{{ section.id }}"
+          class="ledger-input-ui"
           value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
-          required 
+          required
           placeholder="{{ section.settings.name_placeholder | default: "Your full name" }}" />
       </div>
 
@@ -54,15 +54,15 @@
         <label class="ledger-label-ui" for="ContactForm-email-{{ section.id }}">
           {{ section.settings.email_label | default: "Digital Mail" }}
         </label>
-        <input 
-          type="email" 
-          name="contact[email]" 
-          id="ContactForm-email-{{ section.id }}" 
-          class="ledger-input-ui" 
+        <input
+          type="email"
+          name="contact[email]"
+          id="ContactForm-email-{{ section.id }}"
+          class="ledger-input-ui"
           value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
           spellcheck="false"
           autocapitalize="off"
-          required 
+          required
           placeholder="name@domain.com" />
       </div>
 
@@ -89,11 +89,11 @@
         <label class="ledger-label-ui" for="ContactForm-notes-{{ section.id }}">
           {{ section.settings.notes_label | default: "Atelier Notes (Optional)" }}
         </label>
-        <input 
-          type="text" 
-          class="ledger-input-ui" 
-          name="contact[atelier_notes]" 
-          placeholder="{{ section.settings.notes_placeholder | default: "Specify references or sizing requirements" }}" 
+        <input
+          type="text"
+          class="ledger-input-ui"
+          name="contact[atelier_notes]"
+          placeholder="{{ section.settings.notes_placeholder | default: "Specify references or sizing requirements" }}"
           id="ContactForm-notes-{{ section.id }}" />
       </div>
 
@@ -318,7 +318,7 @@
     #AtelierBooking-{{ section.id }} { grid-template-columns: 1fr !important; gap: 60px !important; padding: 0 30px !important; }
     #AtelierBooking-{{ section.id }} .canvas-visual-pane { justify-content: center !important; }
     #AtelierBooking-{{ section.id }} .ledger-interactive-pane { padding-left: 0 !important; }
-    #AtelierBooking-{{ section.id }} .canvas-image-frame, 
+    #AtelierBooking-{{ section.id }} .canvas-image-frame,
     #AtelierBooking-{{ section.id }} .canvas-hairline-accent { width: 65% !important; }
     #AtelierBooking-{{ section.id }} .canvas-hairline-accent { left: calc(17.5% - 20px) !important; }
   }
@@ -328,7 +328,7 @@
     #AtelierBooking-{{ section.id }} .ledger-serif-title { font-size: 42px !important; }
     #AtelierBooking-{{ section.id }} .ledger-serif-title span { font-size: 26px !important; }
     #AtelierBooking-{{ section.id }} .ledger-form-blueprint { grid-template-columns: 1fr !important; gap: 35px !important; }
-    #AtelierBooking-{{ section.id }} .field-span-entirety, 
+    #AtelierBooking-{{ section.id }} .field-span-entirety,
     #AtelierBooking-{{ section.id }} .ledger-action-trigger-block { grid-column: span 1 !important; }
     #AtelierBooking-{{ section.id }} .btn-luxury-submit-blueprint { max-width: 100% !important; }
   }

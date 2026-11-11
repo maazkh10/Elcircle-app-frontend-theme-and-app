@@ -15,7 +15,7 @@ const shop = Shopify.shop
 if(!customerId) return
 
 const url =
-`https://YOUR-TUNNEL/api/loyalty-points?customerId=${customerId}&shop=${shop}`
+`/apps/elcircle-membership/loyalty/points`
 
 const res = await fetch(
 url,

@@ -15,7 +15,7 @@ if (
 const host = new URL(process.env.SHOPIFY_APP_URL || "http://localhost").hostname;
 const appPort = Number(process.env.PORT || 3000);
 // Dynamically offset HMR port based on app port to prevent collisions between multi-app instances
-const hmrPort = appPort + 1000; 
+const hmrPort = appPort + 1000;
 
 let hmrConfig;
 

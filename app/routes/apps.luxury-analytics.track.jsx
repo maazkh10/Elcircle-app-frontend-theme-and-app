@@ -10,16 +10,16 @@ import { authenticate } from "../shopify.server";
 // export const loader = async ({ request }) => {
 //   // Authenticate the incoming request via App Proxy
 // //   const { admin } = await authenticate.public.appProxy(request);
-  
+
 // const { admin } =
 // await authenticate.admin(request);
 
 //   const url = new URL(request.url);
 //   const productId = url.searchParams.get("product_id");
-  
+
 //   if (!productId) {
 //     return Response.json(
-//       { success: false, error: "Missing product_id parameter" }, 
+//       { success: false, error: "Missing product_id parameter" },
 //       { status: 400 }
 //     );
 //   }
@@ -43,7 +43,7 @@ import { authenticate } from "../shopify.server";
 
 //     if (!product) {
 //       return Response.json(
-//         { success: false, error: "Product not found" }, 
+//         { success: false, error: "Product not found" },
 //         { status: 404 }
 //       );
 //     }
@@ -51,8 +51,8 @@ import { authenticate } from "../shopify.server";
 //     const currentCount = product.metafield?.value ? parseInt(product.metafield.value, 10) : 0;
 //     const isTracked = product.tags.includes("track-luxury");
 
-//     return Response.json({ 
-//       success: true, 
+//     return Response.json({
+//       success: true,
 //       count: currentCount,
 //       isTracked: isTracked
 //     });
@@ -60,7 +60,7 @@ import { authenticate } from "../shopify.server";
 //   } catch (error) {
 //     console.error("Backend loader error:", error);
 //     return Response.json(
-//       { success: false, error: error.message }, 
+//       { success: false, error: error.message },
 //       { status: 500 }
 //     );
 //   }
@@ -75,7 +75,7 @@ import { authenticate } from "../shopify.server";
 //     console.log("TRACK ROUTE HIT");
 
 //     // const { admin } = await authenticate.public.appProxy(request);
-  
+
 //     const {admin} = await authenticate.admin(request)
 
 //   const url = new URL(request.url);
@@ -108,12 +108,12 @@ import { authenticate } from "../shopify.server";
 
 //     if (!product) {
 //       return Response.json(
-//         { success: false, error: "Product not found" }, 
+//         { success: false, error: "Product not found" },
 //         { status: 404 }
 //       );
 //     }
 
-//     const targetTag = "track-luxury"; 
+//     const targetTag = "track-luxury";
 //     if (!product.tags.includes(targetTag)) {
 //       return Response.json({ success: true, message: "Tracking skipped: target tag missing." });
 //     }
@@ -153,7 +153,7 @@ import { authenticate } from "../shopify.server";
 //   } catch (error) {
 //     console.error("Backend action error:", error);
 //     return Response.json(
-//       { success: false, error: error.message }, 
+//       { success: false, error: error.message },
 //       { status: 500 }
 //     );
 //   }
@@ -200,21 +200,21 @@ export const action = async ({ request }) => {
 
 
   try {
-    
+
     const {admin} = await authenticate.admin(request)
 
     const body = await request.json()
 
- 
 
- 
+
+
 
     const productId = body.productId;
     const customerId = body.customerId | ""
     const customerEmail = body.customerEmail | ""
 
 
-    const visitorKey = 
+    const visitorKey =
     customerId || customerEmail || "guest";
 
     const fullProductId = `gid://shopify/Product/${productId}`;
@@ -222,7 +222,7 @@ export const action = async ({ request }) => {
     console.log(fullProductId)
 
 
-    // read currect meta field 
+    // read currect meta field
 
     const response = await admin.graphql(`
            query ProductData($id: ID!) {
@@ -239,11 +239,11 @@ export const action = async ({ request }) => {
             variables:{
                 id : fullProductId
             }
-        }) 
+        })
 
         const json = await response.json()
 
-        const raw = 
+        const raw =
         json.data?.prduct?.metafield?.value || "[]";
 
         let visitor = []
@@ -279,7 +279,7 @@ export const action = async ({ request }) => {
                             ownerId : fullProductId,
                             namespace : "luxury_app",
                             key : "popup_visitors",
-                            type : "json" , 
+                            type : "json" ,
                             value : JSON.stringify(visitor)
                         }
                         ]
@@ -293,7 +293,7 @@ export const action = async ({ request }) => {
         return Response.json(
             {
                 success: true,
-                uniqueVisitor : 123 , 
+                uniqueVisitor : 123 ,
                 alredyCounted : false
             },{
                 headers : corsHeaders

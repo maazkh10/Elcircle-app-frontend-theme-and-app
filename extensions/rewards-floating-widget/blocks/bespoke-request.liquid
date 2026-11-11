@@ -15,7 +15,7 @@
   if bespoke_tier == blank
     for product_collection in product.collections
       assign collection_tier = product_collection.metafields.custom.minimum_membership_tier.value | default: '' | downcase | strip
-      if collection_tier == 'emerald' or collection_tier == 'silver'
+      if collection_tier == 'Platinum' or collection_tier == 'silver'
         assign bespoke_tier = collection_tier
         break
       endif
@@ -23,7 +23,7 @@
   endif
 %}
 
-{% if product and bespoke_tier == 'silver' or product and bespoke_tier == 'ruby' %}
+{% if product and bespoke_tier == 'silver' or product and bespoke_tier == 'Platinum' %}
   {{ 'bespoke-request.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'bespoke-request.js' | asset_url }}" defer></script>
 

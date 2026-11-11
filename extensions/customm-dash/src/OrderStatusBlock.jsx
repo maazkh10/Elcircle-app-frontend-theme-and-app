@@ -1,3 +1,4 @@
+import { accountRequest } from "./customer-api";
 import { render } from "preact";
 import { useState } from "preact/hooks";
 import '@shopify/ui-extensions/preact';
@@ -25,34 +26,15 @@ function Extension() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "https://forever-animation-redhead-hotels.trycloudflare.com/apps/return-order",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": "c4d6c3e8b3c5a54ab978a257877f196e",
-          },
-          body: JSON.stringify({ orderId, reason }),
-        }
-      );
-
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        data = { error: "Invalid response" };
-      }
-
-      if (res.ok) {
-        shopify.toast.show("Return request sent! ✅");
-      } else {
-        shopify.toast.show(data.error || "Failed ❌");
-      }
-
+      await accountRequest("/api/customer-account/return", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, reason }),
+      });
+      shopify.toast.show("Return request recorded.");
     } catch (err) {
       console.error("DEBUG:", err);
-      shopify.toast.show("Network Error ❌");
+      shopify.toast.show(err.message || "Unable to submit the return request.");
     } finally {
       setLoading(false);
     }
