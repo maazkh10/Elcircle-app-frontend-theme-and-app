@@ -18,7 +18,9 @@
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "dev:shopify": "shopify app dev"
+    "dev:shopify": "shopify app dev",
+    "publish:theme": "node scripts/publish-theme.mjs",
+    "preview:theme": "node scripts/preview-theme.mjs"
   },
   "type": "module",
   "engines": {
